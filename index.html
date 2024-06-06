@@ -113,6 +113,20 @@
 
       document.body.appendChild(script);
 
+      // JavaScript function to detect mobile devices and trigger vibration
+      function isMobile() {
+        return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      }
+
+      function vibrateDevice() {
+        if (isMobile() && navigator.vibrate) {
+          navigator.vibrate(10); // Vibrate for 200 milliseconds
+        }
+      }
+
+      function UnityCallVibrate() {
+        vibrateDevice();
+      }
     </script>
   </body>
 </html>
