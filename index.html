@@ -98,7 +98,7 @@
       function vibrateDevice() {
         if (isMobile()) {
           if (navigator.vibrate) {
-            navigator.vibrate(200); // Vibrate for 200 milliseconds
+            navigator.vibrate(10); // Vibrate for 200 milliseconds
           } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.vibrateHandler) {
             window.webkit.messageHandlers.vibrateHandler.postMessage(""); // Call the native iOS code
           }
