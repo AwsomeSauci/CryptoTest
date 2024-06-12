@@ -17,7 +17,7 @@ bot.on("callback_query", function (query) {
         bot.answerCallbackQuery(query.id, "Sorry, '" + query.game_short_name + "' is not available.");
     } else {
         queries[query.id] = query;
-        let gameurl = "https://awsomesauci.github.io/CryptoTest/";
+        let gameurl = "https://cj84452.tw1.ru/";
         bot.answerCallbackQuery({
             callback_query_id: query.id,
             url: gameurl
