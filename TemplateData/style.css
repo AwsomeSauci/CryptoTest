@@ -1,72 +1,15 @@
-body {
-  padding: 0;
-  margin: 0;
-}
-
-#unity-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-#unity-container.unity-desktop {
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-#unity-container.unity-mobile {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-}
-
-#unity-canvas {
-  width: 100%;
-  height: 100%;
-  background: url('TemplateData/Back.png') center / cover no-repeat;
-}
-
-.unity-mobile #unity-canvas {
-  width: 100%;
-  height: 100%;
-}
-
-#unity-loading-bar {
-  position: absolute;
-  left: 50%;
-  top: 90%;
-  transform: translate(-50%, -50%);
-  width: 90%;
-}
-
-#unity-progress-bar-empty {
-  width: 100%;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 45px;
-  overflow: hidden;
-}
-
-#unity-progress-bar-full {
-  width: 0%;
-  height: 100%;
-  background: yellow;
-  border-radius: 45px;
-  box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
-  transition: width 0.5s ease-in-out;
-}
-
-#unity-footer {
-  position: relative;
-}
-
-.unity-mobile #unity-footer {
-  display: none;
-}
-
-/* Убираем границы на полосе загрузки */
-#unity-progress-bar-full {
-  box-sizing: border-box;
-  padding: 0 5px;
-}
+body { padding: 0; margin: 0 }
+#unity-container { position: absolute; width: 100%; height: 100%; }
+#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%); }
+#unity-container.unity-mobile { position: fixed; width: 100%; height: 100%; }
+#unity-canvas { width: 100%; height: 100%; background: url('TemplateData/Back.png') center / cover no-repeat; }
+.unity-mobile #unity-canvas { width: 100%; height: 100%; }
+#unity-loading-bar { position: absolute; left: 50%; top: 90%; transform: translate(-50%, -50%); width: 90%; }
+#unity-progress-bar-empty { width: 100%; height: 40px; background: background: url('progress-bar-empty-dark.png') no-repeat center; border-radius: 45px; overflow: hidden; }
+#unity-progress-bar-full { width: 0%; height: 100%; background: url('progress-bar-full-dark.png') no-repeat center; border-radius: 45px;}
+#unity-footer { position: relative }
+.unity-mobile #unity-footer { display: none }
+/* Удаляем логотип WebGL */
+#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px }
+#unity-fullscreen-button { cursor:pointer; float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center }
+#unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
