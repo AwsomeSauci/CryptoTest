@@ -11,12 +11,14 @@
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=540 height=1000 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
+        <!-- <div id="unity-logo"></div> -->
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
       </div>
       <div id="unity-warning"> </div>
       <div id="unity-footer">
+        <!-- <div id="unity-webgl-logo"></div> -->
         <div id="unity-fullscreen-button"></div>
         <div id="unity-build-title">ProBull</div>
       </div>
@@ -75,8 +77,9 @@
         canvas.style.height = "1000px";
       }
 
-      // Устанавливаем фоновое изображение у canvas
-      canvas.style.background = "url('TemplateData/Back.png') center / cover no-repeat";  
+      // Устанавливаем фоновое изображение
+      canvas.style.background = "none";  // Убираем фоновый цвет у canvas
+      container.style.background = "url('TemplateData/Back.png') center / cover no-repeat";
 
       loadingBar.style.display = "block";
 
