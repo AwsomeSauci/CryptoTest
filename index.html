@@ -32,15 +32,6 @@
       // Включение подтверждения при закрытии
       tg.enableClosingConfirmation();
 
-      // Установка текста и отображение основной кнопки
-      tg.MainButton.setText('Send Data');
-      tg.MainButton.show();
-
-      // Обработчик нажатия основной кнопки
-      tg.MainButton.onClick(function() {
-        tg.sendData("Hello, Telegram!");
-      });
-
       // Автоматическое разворачивание мини-приложения
       tg.expand();
 
