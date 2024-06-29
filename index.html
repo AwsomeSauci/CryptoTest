@@ -11,7 +11,7 @@
     function triggerHapticFeedback() {
         const tg = window.Telegram.WebApp;
         if (tg.HapticFeedback) {
-            tg.HapticFeedback.impactOccurred('light');
+            tg.HapticFeedback.impactOccurred('medium');
         } else {
             console.log("HapticFeedback API not supported");
         }
