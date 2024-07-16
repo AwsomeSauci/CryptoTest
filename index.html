@@ -26,7 +26,7 @@
             last_name: tg.initDataUnsafe.user.last_name
         };
         console.log("Returning User Data:", user);
-        SendMessageToUnity("UserDataManager", "ReceiveUserData", JSON.stringify(user));
+        unityInstance.SendMessage("UserDataManager", "ReceiveUserData", JSON.stringify(user));
     }
 
     function SendMessageToUnity(objectName, methodName, message) {
