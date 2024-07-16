@@ -17,6 +17,26 @@
         }
     }
 
+    function getUserData() {
+        const tg = window.Telegram.WebApp;
+        const user = {
+            id: tg.initDataUnsafe.user.id,
+            username: tg.initDataUnsafe.user.username,
+            first_name: tg.initDataUnsafe.user.first_name,
+            last_name: tg.initDataUnsafe.user.last_name
+        };
+        console.log("Returning User Data:", user);
+        SendMessageToUnity("UserDataManager", "ReceiveUserData", JSON.stringify(user));
+    }
+
+    function SendMessageToUnity(objectName, methodName, message) {
+        if (typeof unityInstance != 'undefined') {
+            unityInstance.SendMessage(objectName, methodName, message);
+        } else {
+            console.error("Unity instance is not defined");
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
       // Инициализация Web App
       const tg = window.Telegram.WebApp;
@@ -95,22 +115,8 @@
           progressText.innerText = Math.round(100 * progress) + "%";
         }).then((unityInstance) => {
           loadingBar.style.display = "none";
-          // Сохраняем экземпляр Unity для дальнейшего использования
           window.unityInstance = unityInstance;
-
-          // Пример использования других функций API
-          const user = {
-            id: tg.initDataUnsafe.user.id,
-            username: tg.initDataUnsafe.user.username,
-            first_name: tg.initDataUnsafe.user.first_name,
-            last_name: tg.initDataUnsafe.user.last_name
-          };
-
-          console.log("User Data:", user);
-
-          // Передача данных пользователя в Unity
-          unityInstance.SendMessage('UserDataManager', 'SetUserData', JSON.stringify(user));
-
+          console.log("Unity loaded and instance stored.");
         }).catch((message) => {
           alert(message);
         });
