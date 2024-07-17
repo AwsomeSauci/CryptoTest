@@ -18,6 +18,7 @@
     }
 
     function getUserData() {
+        console.log("getUserData called");
         const tg = window.Telegram.WebApp;
         const user = {
             id: tg.initDataUnsafe.user.id,
@@ -25,12 +26,21 @@
             first_name: tg.initDataUnsafe.user.first_name,
             last_name: tg.initDataUnsafe.user.last_name
         };
-        console.log("Returning User Data:", user);
-        unityInstance.SendMessage("UserDataManager", "ReceiveUserData", JSON.stringify(user));
+        console.log("User data retrieved:", user);
+        SendMessageToUnity("UserDataManager", "ReceiveUserData", JSON.stringify(user));
+    }
+
+    function getWebAppInitData() {
+        console.log("getWebAppInitData called");
+        const tg = window.Telegram.WebApp;
+        const initData = tg.initDataUnsafe;
+        console.log("WebAppInitData retrieved:", initData);
+        SendMessageToUnity("UserDataManager", "ReceiveWebAppInitData", JSON.stringify(initData));
     }
 
     function SendMessageToUnity(objectName, methodName, message) {
-        if (typeof unityInstance != 'undefined') {
+        if (typeof unityInstance !== 'undefined') {
+            console.log("Sending message to Unity:", objectName, methodName, message);
             unityInstance.SendMessage(objectName, methodName, message);
         } else {
             console.error("Unity instance is not defined");
@@ -38,6 +48,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+      console.log("DOMContentLoaded event");
       // Инициализация Web App
       const tg = window.Telegram.WebApp;
       tg.ready();
@@ -117,6 +128,7 @@
           loadingBar.style.display = "none";
           window.unityInstance = unityInstance;
           console.log("Unity loaded and instance stored.");
+          getWebAppInitData(); // Request WebAppInitData after Unity is loaded
         }).catch((message) => {
           alert(message);
         });
