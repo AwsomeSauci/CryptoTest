@@ -33,7 +33,7 @@
     function getWebAppInitData() {
         console.log("getWebAppInitData called");
         const tg = window.Telegram.WebApp;
-        const initData = tg.initDataUnsafe;
+        const initData = window.Telegram.WebApp.initDataUnsafe;
         console.log("WebAppInitData retrieved:", initData);
         SendMessageToUnity("UserDataManager", "ReceiveWebAppInitData", JSON.stringify(initData));
     }
