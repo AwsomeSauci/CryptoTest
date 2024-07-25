@@ -38,6 +38,7 @@
         SendMessageToUnity("UserDataManager", "ReceiveWebAppInitData", JSON.stringify(initData));
     }
 
+
     function SendMessageToUnity(objectName, methodName, message) {
         if (typeof unityInstance !== 'undefined') {
             console.log("Sending message to Unity:", objectName, methodName, message);
