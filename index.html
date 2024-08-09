@@ -130,8 +130,8 @@
           loadingBar.style.display = "none";
           window.unityInstance = unityInstance;
           console.log("Unity loaded and instance stored.");
-          getWebAppInitData(); // Запрос данных инициализации после загрузки Unity
-          getReferralCode(); // Получение реферального кода
+          getWebAppInitData();
+          getReferralCode();
         }).catch((message) => {
           alert(message);
         });
