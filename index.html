@@ -33,18 +33,11 @@
     function getWebAppInitData() {
         console.log("getWebAppInitData called");
         const tg = window.Telegram.WebApp;
-        const initData = tg.initDataUnsafe;
+        const initData = window.Telegram.WebApp.initDataUnsafe;
         console.log("WebAppInitData retrieved:", initData);
         SendMessageToUnity("UserDataManager", "ReceiveWebAppInitData", JSON.stringify(initData));
     }
 
-    function getReferralCode() {
-        console.log("getReferralCode called");
-        const tg = window.Telegram.WebApp;
-        const referralCode = tg.initDataUnsafe.start_param;
-        console.log("Referral code retrieved:", referralCode);
-        SendMessageToUnity("ReferralManager", "ReceiveReferralCode", referralCode);
-    }
 
     function SendMessageToUnity(objectName, methodName, message) {
         if (typeof unityInstance !== 'undefined') {
@@ -57,12 +50,18 @@
 
     document.addEventListener("DOMContentLoaded", function() {
       console.log("DOMContentLoaded event");
+      // Инициализация Web App
       const tg = window.Telegram.WebApp;
       tg.ready();
+
+      // Включение подтверждения при закрытии
       tg.enableClosingConfirmation();
+
+      // Автоматическое разворачивание мини-приложения
       tg.expand();
       tg.MainButton.hide();
 
+      // Unity загрузка инициализации
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
@@ -130,8 +129,7 @@
           loadingBar.style.display = "none";
           window.unityInstance = unityInstance;
           console.log("Unity loaded and instance stored.");
-          getWebAppInitData();
-          getReferralCode();
+          getWebAppInitData(); // Request WebAppInitData after Unity is loaded
         }).catch((message) => {
           alert(message);
         });
