@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
+    var isMobileDevice = false;
+
     function triggerHapticFeedback() {
         const tg = window.Telegram.WebApp;
         if (tg.HapticFeedback) {
@@ -56,20 +58,37 @@
         }
     }
 
+    // Функция для копирования текста в буфер обмена
+    function CopyToClipboard(text) {
+        var tempInput = document.createElement("input");
+        tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Link copied to clipboard!"); // Отобразите уведомление, что ссылка скопирована
+    }
+
+    // Функция проверки устройства
     function CheckDeviceAndCallUnity() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
         // Проверка на Android и iOS устройства
         if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
             console.log("Device is an Android or iOS smartphone.");
+            isMobileDevice = true;
         } else {
             // Если устройство не Android или iOS, вызываем метод в Unity
             console.log("Device is not an Android or iOS smartphone.");
+            isMobileDevice = false;
             SendMessageToUnity("DeviceManager", "OnNonMobileDeviceDetected", "");
         }
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+      CheckDeviceAndCallUnity();
+
       const tg = window.Telegram.WebApp;
       tg.ready();
       tg.enableClosingConfirmation();
@@ -145,7 +164,6 @@
           console.log("Unity loaded and instance stored.");
           getWebAppInitData();
           getReferralCode();
-          CheckDeviceAndCallUnity(); // Проверка устройства и вызов Unity метода
         }).catch((message) => {
           alert(message);
         });
