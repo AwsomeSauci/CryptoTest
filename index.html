@@ -72,10 +72,10 @@
 
     // Функция проверки устройства
     function CheckDeviceAndCallUnity() {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        
 
         // Проверка на Android и iOS устройства
-        if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) && !window.MSStream) {
             console.log("Device is an Android or iOS smartphone.");
             isMobileDevice = true;
         } else {
