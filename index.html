@@ -10,6 +10,22 @@
   <script>
     var isMobileDevice = false;
 
+    // Проверка устройства и передача результата в Unity
+    function CheckDeviceAndReturnToUnity() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+        // Проверка на Android и iOS устройства
+        if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            console.log("Device is an Android or iOS smartphone.");
+            isMobileDevice = true;
+            SendMessageToUnity("DeviceManager", "OnDeviceCheckComplete", "mobile");
+        } else {
+            console.log("Device is not an Android or iOS smartphone.");
+            isMobileDevice = false;
+            SendMessageToUnity("DeviceManager", "OnDeviceCheckComplete", "non-mobile");
+        }
+    }
+
     function triggerHapticFeedback() {
         const tg = window.Telegram.WebApp;
         if (tg.HapticFeedback) {
@@ -70,25 +86,7 @@
         alert("Link copied to clipboard!"); // Отобразите уведомление, что ссылка скопирована
     }
 
-    // Функция проверки устройства
-    function CheckDeviceAndCallUnity() {
-        
-
-        // Проверка на Android и iOS устройства
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) && !window.MSStream) {
-            console.log("Device is an Android or iOS smartphone.");
-            isMobileDevice = true;
-        } else {
-            // Если устройство не Android или iOS, вызываем метод в Unity
-            console.log("Device is not an Android or iOS smartphone.");
-            isMobileDevice = false;
-            SendMessageToUnity("DeviceManager", "OnNonMobileDeviceDetected", "");
-        }
-    }
-
     document.addEventListener("DOMContentLoaded", function() {
-      CheckDeviceAndCallUnity();
-
       const tg = window.Telegram.WebApp;
       tg.ready();
       tg.enableClosingConfirmation();
