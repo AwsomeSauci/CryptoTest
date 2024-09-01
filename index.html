@@ -145,11 +145,8 @@
         canvas.style.height = "580px";
       }
 
-      // Определяем фон в зависимости от языка
-      let languageCode = tg.initDataUnsafe.user.language_code;
-	   
-      let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
-      container.style.background = url('${backgroundImage}') center / cover no-repeat;
+      canvas.style.background = "none";
+      container.style.background = "url('TemplateData/Back.png') center / cover no-repeat";
 
       loadingBar.style.display = "block";
 
