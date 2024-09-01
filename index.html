@@ -94,7 +94,7 @@
         console.log("Telegram WebApp is ready");
 
         // Теперь данные должны быть доступны
-        let languageCode = tg.initDataUnsafe.language_code;
+        let languageCode = tg.initDataUnsafe.user.language_code;
         console.log("Detected language code:", languageCode);  // Проверьте значение
 
         // Определяем фон в зависимости от языка
