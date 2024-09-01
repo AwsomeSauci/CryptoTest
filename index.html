@@ -146,9 +146,11 @@
       }
 
       // Определяем фон в зависимости от языка
-      let languageCode = tg.initDataUnsafe.language_code;
-      let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
-      container.style.background = `url('${backgroundImage}') center / cover no-repeat`;
+      // Определяем фон в зависимости от языка
+  let languageCode = tg.initDataUnsafe.language_code;
+  console.log("Detected language code:", languageCode);  // Для проверки
+  let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
+  container.style.background = `url('${backgroundImage}') center / cover no-repeat`;
 
       loadingBar.style.display = "block";
 
