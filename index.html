@@ -90,13 +90,10 @@
       const tg = window.Telegram.WebApp;
 
       // Убедитесь, что WebApp полностью готов перед доступом к данным
-     tg.ready(function() {
-    console.log("Telegram WebApp is ready");
+      tg.ready(function() {
+        console.log("Telegram WebApp is ready");
 
-    // Проверка доступности initDataUnsafe
-    if (tg.initDataUnsafe) {
-        console.log("initDataUnsafe:", tg.initDataUnsafe); // Печать всего объекта для проверки
-
+        // Теперь данные должны быть доступны
         let languageCode = tg.initDataUnsafe.language_code;
         console.log("Detected language code:", languageCode);  // Проверьте значение
 
@@ -105,9 +102,6 @@
         var container = document.querySelector("#unity-container");
         container.style.background = `url('${backgroundImage}') center / cover no-repeat`;
         console.log("Applied background image:", backgroundImage);
-    } else {
-        console.error("initDataUnsafe is not available or undefined");
-    }
 
         var canvas = document.querySelector("#unity-canvas");
         var loadingBar = document.querySelector("#unity-loading-bar");
