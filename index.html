@@ -145,12 +145,16 @@
         canvas.style.height = "580px";
       }
 
-      // Определяем фон в зависимости от языка
-      // Определяем фон в зависимости от языка
+// Определяем фон в зависимости от языка
   let languageCode = tg.initDataUnsafe.language_code;
   console.log("Detected language code:", languageCode);  // Для проверки
   let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
+  
+  console.log("Setting background image:", backgroundImage);  // Для проверки
   container.style.background = `url('${backgroundImage}') center / cover no-repeat`;
+
+  // Проверьте, правильно ли устанавливается стиль фона
+  console.log("Applied background style:", container.style.background);
 
       loadingBar.style.display = "block";
 
