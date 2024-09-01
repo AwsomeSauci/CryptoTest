@@ -102,6 +102,19 @@
       var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var warningBanner = document.querySelector("#unity-warning");
 
+      // Определяем фон в зависимости от языка пользователя
+      if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        let languageCode = tg.initDataUnsafe.user.language_code;
+        console.log("Detected language code:", languageCode);
+        
+        // Устанавливаем фон в зависимости от языка
+        let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
+        container.style.background = `url('${backgroundImage}') center / cover no-repeat`;
+        console.log("Applied background image:", backgroundImage);
+      } else {
+        console.error("User data is not available.");
+      }
+
       function unityShowBanner(msg, type) {
         function updateBannerVisibility() {
           warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
@@ -146,7 +159,6 @@
       }
 
       canvas.style.background = "none";
-      container.style.background = "url('TemplateData/Back.png') center / cover no-repeat";
 
       loadingBar.style.display = "block";
 
