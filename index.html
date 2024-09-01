@@ -91,11 +91,25 @@
 
       // Убедитесь, что WebApp полностью готов перед доступом к данным
       tg.ready(function() {
-        console.log("Telegram WebApp is ready");
+    console.log("Telegram WebApp is ready");
 
-        // Теперь данные должны быть доступны
-        let languageCode = tg.initDataUnsafe.user.language_code;
+    // Проверка доступности initDataUnsafe
+    if (tg.initDataUnsafe) {
+        console.log("initDataUnsafe:", tg.initDataUnsafe); // Печать всего объекта для проверки
+
+        let languageCode = tg.initDataUnsafe.language_code;
         console.log("Detected language code:", languageCode);  // Проверьте значение
+
+        // Определяем фон в зависимости от языка
+        let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
+        var container = document.querySelector("#unity-container");
+        container.style.background = `url('${backgroundImage}') center / cover no-repeat`;
+        console.log("Applied background image:", backgroundImage);
+    } else {
+        console.error("initDataUnsafe is not available or undefined");
+    }
+
+
 
         // Определяем фон в зависимости от языка
         let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
