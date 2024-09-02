@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    // Обработчик ошибок загрузки
-    window.addEventListener('error', function(event) {
+    // Функция для отображения кастомного сообщения об ошибке
+    function showCustomErrorMessage() {
         const tg = window.Telegram.WebApp;
         let languageCode = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.language_code : 'en';
         
@@ -17,36 +17,51 @@
             ? 'Кажется, что-то сломалось. Попробуйте перезапустить приложение, мы уже работаем над этой проблемой.'
             : 'It seems that something is broken. Try restarting the application, we are already working on this problem.';
         
-        // Отображаем сообщение вместо стандартного сообщения об ошибке
         alert(errorMessage);
-        
-        // Предотвращаем стандартное отображение ошибки в консоли
-        event.preventDefault();
+    }
+
+    // Обработчик ошибок загрузки
+    window.addEventListener('error', function(event) {
+        showCustomErrorMessage();
+        event.preventDefault(); // Предотвращаем стандартное отображение ошибки в консоли
     });
 
     // Обработчик ошибок не пойманных обещаний (Promise rejections)
     window.addEventListener('unhandledrejection', function(event) {
-        const tg = window.Telegram.WebApp;
-        let languageCode = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.language_code : 'en';
-        
-        let errorMessage = languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk'
-            ? 'Кажется, что-то сломалось. Попробуйте перезапустить приложение, мы уже работаем над этой проблемой.'
-            : 'It seems that something is broken. Try restarting the application, we are already working on this problem.';
-        
-        // Отображаем сообщение вместо стандартного сообщения об ошибке
-        alert(errorMessage);
-        
-        // Предотвращаем стандартное отображение ошибки в консоли
-        event.preventDefault();
+        showCustomErrorMessage();
+        event.preventDefault(); // Предотвращаем стандартное отображение ошибки в консоли
     });
+
+    function unityShowBanner(msg, type) {
+        // Модифицируем серое окно для отображения кастомного сообщения об ошибке
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+            warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+
+        // Создаем элемент для сообщения об ошибке, убираем заголовок
+        var div = document.createElement('div');
+        var modifiedMsg = msg.replace(/^WebAssembly.*\n/, ''); // Удаляем первую строку с заголовком
+        
+        // Устанавливаем измененное сообщение
+        div.innerHTML = modifiedMsg;
+        warningBanner.appendChild(div);
+
+        // Стилизация серого окна
+        if (type === 'error') div.style = 'background: #333; color: #fff; padding: 10px;'; // Для ошибок серый фон
+
+        // Если это предупреждение, скрываем баннер (жёлтый фон)
+        if (type === 'warning') {
+            div.style.display = 'none'; // Скрываем жёлтый баннер
+        }
+
+        updateBannerVisibility();
+    }
 
     var isMobileDevice = false;
 
-    // Проверка устройства и передача результата в Unity
     function CheckDeviceAndReturnToUnity() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-
-        // Проверка на Android и iOS устройства
         if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
             console.log("Device is an Android or iOS smartphone.");
             isMobileDevice = true;
@@ -134,35 +149,15 @@
       var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var warningBanner = document.querySelector("#unity-warning");
 
-      // Определяем фон в зависимости от языка пользователя
       if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
         let languageCode = tg.initDataUnsafe.user.language_code;
         console.log("Detected language code:", languageCode);
         
-        // Устанавливаем фон в зависимости от языка
         let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
         container.style.background = `url('${backgroundImage}') center / cover no-repeat`;
         console.log("Applied background image:", backgroundImage);
       } else {
         console.error("User data is not available.");
-      }
-
-      function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
       }
 
       var buildUrl = "Build";
@@ -175,7 +170,7 @@
         companyName: "DefaultCompany",
         productName: "ProBull",
         productVersion: "0.21",
-        showBanner: unityShowBanner,
+        showBanner: unityShowBanner, // Используем модифицированную функцию
       };
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
@@ -207,15 +202,7 @@
           getWebAppInitData();
           getReferralCode();
         }).catch((message) => {
-          // Перехват ошибок и отображение сообщения
-          const tg = window.Telegram.WebApp;
-          let languageCode = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.language_code : 'en';
-
-          let errorMessage = languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk'
-              ? 'Кажется, что-то сломалось. Попробуйте перезапустить приложение, мы уже работаем над этой проблемой.'
-              : 'It seems that something is broken. Try restarting the application, we are already working on this problem.';
-
-          alert(errorMessage);
+          showCustomErrorMessage(); // Вызов функции для кастомного сообщения
         });
       };
 
@@ -233,7 +220,7 @@
         <img id="unity-progress-arrow" src="TemplateData/arrow.png" alt="arrow">
       </div>
     </div>
-    <div id="unity-warning"> </div>
+    <div id="unity-warning"></div>
     <div id="unity-footer">
       <div id="unity-build-title">ProBull</div>
     </div>
