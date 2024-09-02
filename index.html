@@ -8,6 +8,38 @@
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
+    // Обработчик ошибок загрузки
+    window.addEventListener('error', function(event) {
+        const tg = window.Telegram.WebApp;
+        let languageCode = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.language_code : 'en';
+        
+        let errorMessage = languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk'
+            ? 'Кажется, что-то сломалось. Попробуйте перезапустить приложение, мы уже работаем над этой проблемой.'
+            : 'It seems that something is broken. Try restarting the application, we are already working on this problem.';
+        
+        // Отображаем сообщение вместо стандартного сообщения об ошибке
+        alert(errorMessage);
+        
+        // Предотвращаем стандартное отображение ошибки в консоли
+        event.preventDefault();
+    });
+
+    // Обработчик ошибок не пойманных обещаний (Promise rejections)
+    window.addEventListener('unhandledrejection', function(event) {
+        const tg = window.Telegram.WebApp;
+        let languageCode = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.language_code : 'en';
+        
+        let errorMessage = languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk'
+            ? 'Кажется, что-то сломалось. Попробуйте перезапустить приложение, мы уже работаем над этой проблемой.'
+            : 'It seems that something is broken. Try restarting the application, we are already working on this problem.';
+        
+        // Отображаем сообщение вместо стандартного сообщения об ошибке
+        alert(errorMessage);
+        
+        // Предотвращаем стандартное отображение ошибки в консоли
+        event.preventDefault();
+    });
+
     var isMobileDevice = false;
 
     // Проверка устройства и передача результата в Unity
@@ -175,7 +207,15 @@
           getWebAppInitData();
           getReferralCode();
         }).catch((message) => {
-          alert(message);
+          // Перехват ошибок и отображение сообщения
+          const tg = window.Telegram.WebApp;
+          let languageCode = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.language_code : 'en';
+
+          let errorMessage = languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk'
+              ? 'Кажется, что-то сломалось. Попробуйте перезапустить приложение, мы уже работаем над этой проблемой.'
+              : 'It seems that something is broken. Try restarting the application, we are already working on this problem.';
+
+          alert(errorMessage);
         });
       };
 
