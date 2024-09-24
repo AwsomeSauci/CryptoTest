@@ -33,14 +33,15 @@
         event.preventDefault(); // Предотвращаем стандартное отображение ошибки в консоли
     });
 	function PasteFromClipboardUnity() {
-        navigator.clipboard.readText().then(
-            clipText => {
-                SendMessageToUnity("AboutMoneyScreenView", "SetClipboardText", clipText);
-            }
-        ).catch(err => {
-            console.error("Failed to read clipboard contents: ", err);            
-        });
-    }
+    navigator.clipboard.readText().then(
+        clipText => {
+            console.log("Clipboard text:", clipText); // Добавьте это для проверки текста
+            SendMessageToUnity("AboutMoneyScreenView", "SetClipboardText", clipText);
+        }
+    ).catch(err => {
+        console.error("Failed to read clipboard contents: ", err);            
+    });
+}
     function unityShowBanner(msg, type) {
         // Модифицируем серое окно для отображения кастомного сообщения об ошибке
         var warningBanner = document.querySelector("#unity-warning");
