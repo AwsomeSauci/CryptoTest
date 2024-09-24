@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
+  
     // Функция для отображения кастомного сообщения об ошибке
     function showCustomErrorMessage() {
         const tg = window.Telegram.WebApp;
@@ -31,7 +32,15 @@
         showCustomErrorMessage();
         event.preventDefault(); // Предотвращаем стандартное отображение ошибки в консоли
     });
-
+	function PasteFromClipboardUnity() {
+        navigator.clipboard.readText().then(
+            clipText => {
+                SendMessageToUnity("AboutMoneyScreenView", "SetClipboardText", clipText);
+            }
+        ).catch(err => {
+            console.error("Failed to read clipboard contents: ", err);            
+        });
+    }
     function unityShowBanner(msg, type) {
         // Модифицируем серое окно для отображения кастомного сообщения об ошибке
         var warningBanner = document.querySelector("#unity-warning");
