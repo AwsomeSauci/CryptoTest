@@ -1,60 +1,179 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | My project</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=1080 height=2400 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">My project</div>
-      </div>
-    </div>
-    <script>
-      var canvas = document.querySelector("#unity-canvas");
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Permissions-Policy" content="clipboard-read=*, clipboard-write=*">
+  <title>Unity WebGL Player | My project</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+  
+    // Функция для отображения кастомного сообщения об ошибке
+    function showCustomErrorMessage() {
+        const tg = window.Telegram.WebApp;
+        let languageCode = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.language_code : 'en';
+        
+        let errorMessage = languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk'
+            ? 'Кажется, что-то сломалось. Попробуйте перезапустить приложение, мы уже работаем над этой проблемой.'
+            : 'It seems that something is broken. Try restarting the application, we are already working on this problem.';
+        
+        alert(errorMessage);
+    }
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
+    // Обработчик ошибок загрузки
+    window.addEventListener('error', function(event) {
+        showCustomErrorMessage();
+        event.preventDefault(); // Предотвращаем стандартное отображение ошибки в консоли
+    });
+
+    // Обработчик ошибок не пойманных обещаний (Promise rejections)
+    window.addEventListener('unhandledrejection', function(event) {
+        showCustomErrorMessage();
+        event.preventDefault(); // Предотвращаем стандартное отображение ошибки в консоли
+    });
+	function PasteFromClipboardUnity() {
+    navigator.clipboard.readText().then(
+        clipText => {
+            console.log("Clipboard text:", clipText); // Добавьте это для проверки текста
+            SendMessageToUnity("AboutMoneyScreenView", "SetClipboardText", clipText);
+        }
+    ).catch(err => {
+        console.error("Failed to read clipboard contents: ", err);            
+    });
+}
+    function unityShowBanner(msg, type) {
+        // Модифицируем серое окно для отображения кастомного сообщения об ошибке
         var warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+            warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
         }
+
+        // Создаем элемент для сообщения об ошибке, убираем заголовок
         var div = document.createElement('div');
-        div.innerHTML = msg;
+        var modifiedMsg = msg.replace(/^WebAssembly.*\n/, ''); // Удаляем первую строку с заголовком
+        
+        // Устанавливаем измененное сообщение
+        div.innerHTML = modifiedMsg;
         warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
+
+        // Стилизация серого окна
+        if (type === 'error') div.style = 'background: #333; color: #fff; padding: 10px;'; // Для ошибок серый фон
+
+        // Если это предупреждение, скрываем баннер (жёлтый фон)
+        if (type === 'warning') {
+            div.style.display = 'none'; // Скрываем жёлтый баннер
         }
+
         updateBannerVisibility();
+    }
+
+    var isMobileDevice = false;
+
+    function CheckDeviceAndReturnToUnity() {
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            console.log("Device is an Android or iOS smartphone.");
+            isMobileDevice = true;
+            SendMessageToUnity("DeviceManager", "OnDeviceCheckComplete", "mobile");
+        } else {
+            console.log("Device is not an Android or iOS smartphone.");
+            isMobileDevice = false;
+            SendMessageToUnity("DeviceManager", "OnDeviceCheckComplete", "non-mobile");
+        }
+    }
+
+    function triggerHapticFeedback() {
+        const tg = window.Telegram.WebApp;
+        if (tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('medium');
+        } else {
+            console.log("HapticFeedback API not supported");
+        }
+    }
+
+    function getUserData() {
+        const tg = window.Telegram.WebApp;
+        const user = {
+            id: tg.initDataUnsafe.user.id,
+            username: tg.initDataUnsafe.user.username,
+            first_name: tg.initDataUnsafe.user.first_name,
+            last_name: tg.initDataUnsafe.user.last_name
+        };
+        console.log("User data retrieved:", user);
+        SendMessageToUnity("UserDataManager", "ReceiveUserData", JSON.stringify(user));
+    }
+
+    function getWebAppInitData() {
+        const tg = window.Telegram.WebApp;
+        const initData = tg.initDataUnsafe;
+        console.log("WebAppInitData retrieved:", initData);
+        SendMessageToUnity("UserDataManager", "ReceiveWebAppInitData", JSON.stringify(initData));
+    }
+
+    function getReferralCode() {
+        const tg = window.Telegram.WebApp;
+        const referralCode = tg.initDataUnsafe.start_param;
+        console.log("Referral code retrieved:", referralCode);
+        SendMessageToUnity("ReferralManager", "ReceiveReferralCode", referralCode);
+    }
+
+    function RequestReferralCodeFromJS() {
+        getReferralCode();
+    }
+
+    function SendMessageToUnity(objectName, methodName, message) {
+        if (typeof unityInstance !== 'undefined') {
+            console.log("Sending message to Unity:", objectName, methodName, message);
+            unityInstance.SendMessage(objectName, methodName, message);
+        } else {
+            console.error("Unity instance is not defined");
+        }
+    }
+
+    // Функция для копирования текста в буфер обмена
+    function CopyToClipboard(text) {
+        var tempInput = document.createElement("input");
+        tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        alert("Link copied to clipboard!"); // Отобразите уведомление, что ссылка скопирована
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.enableClosingConfirmation();
+      tg.expand();
+      tg.MainButton.hide();
+
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var progressText = document.querySelector("#unity-progress-text");
+      var progressArrow = document.querySelector("#unity-progress-arrow");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var warningBanner = document.querySelector("#unity-warning");
+
+      if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        let languageCode = tg.initDataUnsafe.user.language_code;
+        console.log("Detected language code:", languageCode);
+        
+        let backgroundImage = (languageCode === 'ru' || languageCode === 'be' || languageCode === 'uk') ? 'TemplateData/backRU.png' : 'TemplateData/backEN.png';
+        container.style.background = `url('${backgroundImage}') center / cover no-repeat`;
+        console.log("Applied background image:", backgroundImage);
+      } else {
+        console.error("User data is not available.");
       }
 
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/CryptoTest.loader.js";
       var config = {
-        arguments: [],
         dataUrl: buildUrl + "/CryptoTest.data.br",
         frameworkUrl: buildUrl + "/CryptoTest.framework.js.br",
         codeUrl: buildUrl + "/CryptoTest.wasm.br",
@@ -62,66 +181,60 @@
         companyName: "DefaultCompany",
         productName: "My project",
         productVersion: "1.0",
-        showBanner: unityShowBanner,
+        showBanner: unityShowBanner, // Используем модифицированную функцию
       };
 
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
-
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
-        document.querySelector("#unity-container").className = "unity-mobile";
+        container.className = "unity-mobile";
         canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-
       } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
         canvas.style.width = "1080px";
         canvas.style.height = "2400px";
       }
 
-      document.querySelector("#unity-loading-bar").style.display = "block";
+      canvas.style.background = "none";
+
+      loadingBar.style.display = "block";
 
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
-
-              }).catch((message) => {
-                alert(message);
-              });
-            };
+          progressBarFull.style.width = 100 * progress + "%";
+          progressText.innerText = Math.round(100 * progress) + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+          window.unityInstance = unityInstance;
+          console.log("Unity loaded and instance stored.");
+          getWebAppInitData();
+          getReferralCode();
+        }).catch((message) => {
+          showCustomErrorMessage(); // Вызов функции для кастомного сообщения
+        });
+      };
 
       document.body.appendChild(script);
-
-    </script>
-  </body>
+    });
+  </script>
+</head>
+<body>
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas" width=1080 height=2400 tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+        <div id="unity-progress-text">0%</div>
+        <img id="unity-progress-arrow" src="TemplateData/arrow.png" alt="arrow">
+      </div>
+    </div>
+    <div id="unity-warning"></div>
+    <div id="unity-footer">
+      <div id="unity-build-title">My project</div>
+    </div>
+  </div>
+</body>
 </html>
