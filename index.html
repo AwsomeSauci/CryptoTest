@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="Permissions-Policy" content="clipboard-read=*, clipboard-write=*">
-  <title>Unity WebGL Player | My project</title>
+  <title>Unity WebGL Player | ProBull</title>
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -179,8 +179,8 @@
         codeUrl: buildUrl + "/CryptoTest.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
-        productName: "My project",
-        productVersion: "1.0",
+        productName: "ProBull",
+        productVersion: "0.21",
         showBanner: unityShowBanner, // Используем модифицированную функцию
       };
 
@@ -192,8 +192,8 @@
         container.className = "unity-mobile";
         canvas.className = "unity-mobile";
       } else {
-        canvas.style.width = "1080px";
-        canvas.style.height = "2400px";
+        canvas.style.width = "375px";
+        canvas.style.height = "580px";
       }
 
       canvas.style.background = "none";
@@ -223,7 +223,7 @@
 </head>
 <body>
   <div id="unity-container" class="unity-desktop">
-    <canvas id="unity-canvas" width=1080 height=2400 tabindex="-1"></canvas>
+    <canvas id="unity-canvas" width=375 height=580 tabindex="-1"></canvas>
     <div id="unity-loading-bar">
       <div id="unity-progress-bar-empty">
         <div id="unity-progress-bar-full"></div>
@@ -233,7 +233,7 @@
     </div>
     <div id="unity-warning"></div>
     <div id="unity-footer">
-      <div id="unity-build-title">My project</div>
+      <div id="unity-build-title">ProBull</div>
     </div>
   </div>
 </body>
